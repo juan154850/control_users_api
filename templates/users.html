@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">        
+
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        
+        tr:nth-child(even){background-color: #f2f2f2}
+        
+        th {
+            background-color: #1E88E5;
+            color: white;
+        }
+        .pagination {
+            display: inline-block;
+            margin: 20px 0;
+        }
+        
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+        }
+        
+        .pagination a.active {
+            background-color: #1E88E5;
+            color: white;
+        }
+        
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+        form button[type="submit"] {
+        background-color: #1E88E5;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+        }
+        
+        form button[type="submit"]:hover {
+            background-color: #1565C0;
+        }
+    </style>
+    
+
+    <title>Consulta de Empleados</title>
+</head>
+<body>
+    <table >
+        <thead>
+            <tr>
+                <!-- <th>ID</th> -->
+                <th>Primer Nombre</th>
+                <th>Otros nombres</th>
+                <th>Primer Apellido</th>
+                <th>Email</th>
+                <!-- <th>País del empleo</th> -->
+                <th>Accion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <!-- <td>{{ user.id }}</td> -->
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.other_name }}</td>
+                <td>{{ user.first_surname }}</td>
+                <td>{{ user.email }}</td>
+                <!-- <td>{{ user.country }}</td> -->
+                <td>
+                    <button onclick="delete_user({{ user.id }})">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        {% if skip > 0 %}
+            <a href="?skip={{ skip - limit }}&limit={{ limit }}">« Anterior</a>
+        {% endif %}
+        {% for page in range(pages) %}
+            {% if page * limit == skip %}
+                <a href="?skip={{ page * limit }}&limit={{ limit }}" class="active">{{ page + 1 }}</a>
+            {% else %}
+                <a href="?skip={{ page * limit }}&limit={{ limit }}">{{ page + 1 }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if skip + limit < total %}
+            <a href="?skip={{ skip + limit }}&limit={{ limit }}">Siguiente »</a>
+        {% endif %}
+    </div>
+    
+
+    <form action="/api/new_user">        
+        <button type="submit" value="Create New User">Create New User</button>
+    </form>
+
+
+    <script>
+    async function delete_user(user_id) {
+    if (confirm("¿Está seguro de que desea eliminar el empleado? Sí / No")) {
+        const response = await fetch(`/api/user/${user_id}`, {
+        method: 'DELETE'
+        })
+        
+        if(response.ok){
+            window.location.reload();
+            alert(`The user has been deleted`);
+        }else{
+            alert(`Ha ocurrido un error.`);
+        }
+    }
+    }
+
+    </script>
+    
+</body>
+</html>
