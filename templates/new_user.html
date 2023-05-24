@@ -1,118 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />  
     <title>Create New User API</title>
-
-    <style>
-        .user-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: 30px;
-            font-family: Arial, sans-serif;
-        }
-    
-        .form-group {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-    
-        label {
-            margin-right: 10px;
-            font-weight: bold;
-        }
-    
-        input[type="text"], select {
-            width: 200px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            font-size: 14px;
-        }
-    
-        button[type="submit"] {
-            width: 200px;
-            padding: 5px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-    
-        button[type="submit"]:hover {
-            background-color: #45a049;
-        }
-    </style>
-
-
-</head>
-<body>
+  </head>
+  <body>
     <form id="user-form" method="post" action="/api/user" class="user-form">
-        <div class="form-group">
-            <label for="first_surname">Primer Apellido:</label>
-            <input type="text" id="first_surname" name="first_surname" required maxlength="20">
-        </div>
-    
-        <div class="form-group">
-            <label for="first_name">Primer Nombre:</label>
-            <input type="text" id="first_name" name="first_name" required pattern="[A-Z]+" maxlength="20">
-        </div>
-    
-        <div class="form-group">
-            <label for="other_name">Otros Nombres:</label>
-            <input type="text" id="other_name" name="other_name" pattern="^[A-Z ]+$" maxlength="50">
-        </div>
-    
-        <div class="form-group">
-            <label for="country">País del empleo:</label>
-            <select id="country" name="country">
-                {% for option in country_options %}
-                <option value="{{ option }}">{{ option }}</option>
-                {% endfor %}
-            </select>
-        </div>
-    
-        <button type="submit">Create User</button>
-                
+      <div class="form-group">
+        <label for="first_surname">Primer Apellido:</label>
+        <input
+          type="text"
+          id="first_surname"
+          name="first_surname"
+          required
+          maxlength="20"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="first_name">Primer Nombre:</label>
+        <input
+          type="text"
+          id="first_name"
+          name="first_name"
+          required
+          pattern="[A-Z]+"
+          maxlength="20"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="other_name">Otros Nombres:</label>
+        <input
+          type="text"
+          id="other_name"
+          name="other_name"
+          pattern="^[A-Z ]+$"
+          maxlength="50"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="country">País del empleo:</label>
+        <select id="country" name="country">
+          {% for option in country_options %}
+          <option value="{{ option }}">{{ option }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit">Create User</button>
     </form>
 
     <script>
-        const form = document.getElementById('user-form');
-        form.addEventListener('submit', async (event) => {            
-            event.preventDefault();
-            const formData = new FormData(form);
+      const form = document.getElementById("user-form");
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const formData = new FormData(form);
 
-            // Convert form data to a JavaScript object
-            const data = {};
-            formData.forEach((value, key) => data[key] = value);   
-            
-            const regex = /^[A-Z ]+$/; // Valid characters are A-Z, space for 
-            //!regex.test(data['other_name']) ||
-            if(((!regex.test(data['first_surname'])))){
-                alert("Please enter only uppercase letters and spaces");
-                return false;
-            }
+        // Convert form data to a JavaScript object
+        const data = {};
+        formData.forEach((value, key) => (data[key] = value));
 
-            const response = await fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },                
-                body: JSON.stringify(data) // Send data as a JSON
-            });            
-            window.location.href = '/'; 
-               
-        });        
+        const regex = /^[A-Z ]+$/; // Valid characters are A-Z, space for
+        //!regex.test(data['other_name']) ||
+        if (!regex.test(data["first_surname"])) {
+          alert("Please enter only uppercase letters and spaces");
+          return false;
+        }
 
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data), // Send data as a JSON
+        });
+        window.location.href = "/";
+      });
     </script>
-</body>
+  </body>
 </html>

@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Response, HTTPException, status, Request
-from starlette.status import HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
 from schema.user_schema import UserSchema, UserUpdateSchema
 from model.users import users
 from config.db import engine 
@@ -10,7 +9,11 @@ import re
 from math import ceil
 from sqlalchemy import select, func
 
+
+
 user = APIRouter()
+
+
 templates = Jinja2Templates(directory="templates")
 
 
@@ -54,7 +57,7 @@ async def new_user(request: Request):
     return templates.TemplateResponse("new_user.html", context=context)    
 
 # Create method
-@user.post("/api/user", status_code=HTTP_201_CREATED)
+@user.post("/api/user", status_code=201)
 def create_user(data_user: UserSchema):
     with engine.connect() as connection:
 
@@ -79,7 +82,7 @@ def create_user(data_user: UserSchema):
             
             # add email validation
             if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-                raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="Invalid email format")
+                raise HTTPException(status_code=400, detail="Invalid email format")
             
             result = connection.execute(users.select().where(users.c.email == email)).fetchone()
             if result is None:
@@ -91,7 +94,7 @@ def create_user(data_user: UserSchema):
         connection.execute(users.insert().values(new_user))
         connection.commit()
 
-        return Response(status_code=HTTP_201_CREATED)
+        return Response(status_code=201)
 
 # Get all the users method
 @user.get("/api/user", response_model=List[UserSchema])
@@ -149,11 +152,11 @@ def update_user(data_update:UserUpdateSchema , user_id:str):
         
 
 #Delete User
-@user.delete("/api/user/{user_id}", status_code=HTTP_204_NO_CONTENT)
+@user.delete("/api/user/{user_id}", status_code=204)
 def delete_user(user_id:str):
     with engine.connect() as connection:
         connection.execute(
             users.delete().where(users.c.id == user_id)
         )     
         # connection.commit()   
-        return Response(status_code=HTTP_204_NO_CONTENT)
+        return Response(status_code=204)

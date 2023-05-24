@@ -4,61 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">        
-
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        
-        th, td {
-            text-align: left;
-            padding: 8px;
-        }
-        
-        tr:nth-child(even){background-color: #f2f2f2}
-        
-        th {
-            background-color: #1E88E5;
-            color: white;
-        }
-        .pagination {
-            display: inline-block;
-            margin: 20px 0;
-        }
-        
-        .pagination a {
-            color: black;
-            float: left;
-            padding: 8px 16px;
-            text-decoration: none;
-        }
-        
-        .pagination a.active {
-            background-color: #1E88E5;
-            color: white;
-        }
-        
-        .pagination a:hover:not(.active) {
-            background-color: #ddd;
-        }
-        form button[type="submit"] {
-        background-color: #1E88E5;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        margin-top: 20px;
-        }
-        
-        form button[type="submit"]:hover {
-            background-color: #1565C0;
-        }
-    </style>
-    
-
+    <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />
     <title>Consulta de Empleados</title>
 </head>
 <body>
@@ -90,7 +36,6 @@
             {% endfor %}
         </tbody>
     </table>
-
     <div class="pagination">
         {% if skip > 0 %}
             <a href="?skip={{ skip - limit }}&limit={{ limit }}">« Anterior</a>
@@ -106,20 +51,15 @@
             <a href="?skip={{ skip + limit }}&limit={{ limit }}">Siguiente »</a>
         {% endif %}
     </div>
-    
-
     <form action="/api/new_user">        
         <button type="submit" value="Create New User">Create New User</button>
     </form>
-
-
     <script>
     async function delete_user(user_id) {
     if (confirm("¿Está seguro de que desea eliminar el empleado? Sí / No")) {
         const response = await fetch(`/api/user/${user_id}`, {
         method: 'DELETE'
         })
-        
         if(response.ok){
             window.location.reload();
             alert(`The user has been deleted`);
@@ -128,8 +68,6 @@
         }
     }
     }
-
     </script>
-    
 </body>
 </html>
